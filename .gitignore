@@ -1,2 +1,28 @@
 rf_model.pkl
 *.pkl
+
+# Test scripts and temporary generated files
+check_errors.py
+check_imports.py
+dump_cells.py
+find_train.py
+patch_arima.py
+patch_arima_split.py
+patch_notebook.py
+patch_stats_install.py
+Actionable_Insights.py
+
+# Intermediate/Executed Notebooks
+04_Model_Building_Evaluation_executed.ipynb
+
+# Generated data files
+interim_store.csv
+interim_test.csv
+interim_train.csv
+processed_test.csv
+processed_train.csv
+rossmann.csv
+submission.csv
+
+# System files
+.DS_Store
