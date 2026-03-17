@@ -145,204 +145,223 @@ if page == "🔮 Sales Prediction":
 # ==========================================================
 # PAGE 2: OVERALL INSIGHTS
 # ==========================================================
-# elif page == "📊 Overall Insights":
-#     st.title("📊 Actionable Insights Dashboard")
-#     st.markdown("Explore deep insights extracted from historical Rossmann Sales data.")
+elif page == "📊 Overall Insights":
+    st.title("📊 Actionable Insights Dashboard")
+    st.markdown("Explore deep insights extracted from historical Rossmann Sales data.")
     
-#     if raw_data_loaded:
-#         overall_mean_sales = df['Sales'].mean()
+    if raw_data_loaded:
+        overall_mean_sales = df['Sales'].mean()
         
-#         # 1. Sales Trends Over Time
-#         st.subheader("� 1. Sales Trends Over Time")
-#         st.markdown("Examine how average sales and total sales percentage change fluctuate on a month-by-month basis.")
+        # 1. Sales Trends Over Time
+        st.subheader("� 1. Sales Trends Over Time")
+        st.markdown("Examine how average sales and total sales percentage change fluctuate on a month-by-month basis.")
         
-#         average_sales_time = df.groupby('DateStr')['Sales'].mean().reset_index()
-#         pct_change_sales_time = df.groupby('DateStr')['Sales'].sum().pct_change() * 100
-#         average_sales_time['Pct_Change'] = pct_change_sales_time.values
+        average_sales_time = df.groupby('DateStr')['Sales'].mean().reset_index()
+        pct_change_sales_time = df.groupby('DateStr')['Sales'].sum().pct_change() * 100
+        average_sales_time['Pct_Change'] = pct_change_sales_time.values
         
-#         fig1 = make_subplots(specs=[[{"secondary_y": True}]])
-#         fig1.add_trace(go.Scatter(x=average_sales_time['DateStr'], y=average_sales_time['Sales'], name='Avg Sales', mode='lines+markers', line=dict(color='blue')), secondary_y=False)
-#         fig1.add_trace(go.Bar(x=average_sales_time['DateStr'], y=average_sales_time['Pct_Change'], name='% Change (MoM)', marker_color='rgba(0, 255, 0, 0.4)'), secondary_y=True)
-#         fig1.update_layout(title_text='Average Sales and Month-over-Month Percent Change')
-#         fig1.update_yaxes(title_text="Average Sales", secondary_y=False)
-#         fig1.update_yaxes(title_text="% Change", secondary_y=True)
-#         st.plotly_chart(fig1, use_container_width=True)
+        fig1 = make_subplots(specs=[[{"secondary_y": True}]])
+        fig1.add_trace(go.Scatter(x=average_sales_time['DateStr'], y=average_sales_time['Sales'], name='Avg Sales', mode='lines+markers', line=dict(color='blue')), secondary_y=False)
+        fig1.add_trace(go.Bar(x=average_sales_time['DateStr'], y=average_sales_time['Pct_Change'], name='% Change (MoM)', marker_color='rgba(0, 255, 0, 0.4)'), secondary_y=True)
+        fig1.update_layout(title_text='Average Sales and Month-over-Month Percent Change')
+        fig1.update_yaxes(title_text="Average Sales", secondary_y=False)
+        fig1.update_yaxes(title_text="% Change", secondary_y=True)
+        st.plotly_chart(fig1, use_container_width=True)
         
-#         col_a, col_b = st.columns(2)
+        col_a, col_b = st.columns(2)
         
-#         # 2. Day of Week Insights
-#         with col_a:
-#             st.subheader("📅 2. Day of Week Insights")
-#             day_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-#             day_stats = df.groupby('DayName')['Sales'].mean().reindex(day_order).reset_index()
+        # 2. Day of Week Insights
+        with col_a:
+            st.subheader("📅 2. Day of Week Insights")
+            day_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            day_stats = df.groupby('DayName')['Sales'].mean().reindex(day_order).reset_index()
             
-#             fig2 = px.bar(day_stats, x='DayName', y='Sales', title='Average Sales by Day of Week', color='Sales', color_continuous_scale='viridis')
-#             fig2.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red', annotation_text='Overall Avg')
-#             st.plotly_chart(fig2, use_container_width=True)
+            fig2 = px.bar(day_stats, x='DayName', y='Sales', title='Average Sales by Day of Week', color='Sales', color_continuous_scale='viridis')
+            fig2.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red', annotation_text='Overall Avg')
+            st.plotly_chart(fig2, use_container_width=True)
             
-#         # 3. Promotional Insights
-#         with col_b:
-#             st.subheader("🏷️ 3. Impact of Promotions")
-#             promo_stats = df.groupby('Promo')['Sales'].mean().reset_index()
-#             promo_stats['Promo_Label'] = promo_stats['Promo'].map({0: 'No Promo', 1: 'Promo Active'})
+        # 3. Promotional Insights
+        with col_b:
+            st.subheader("🏷️ 3. Impact of Promotions")
+            promo_stats = df.groupby('Promo')['Sales'].mean().reset_index()
+            promo_stats['Promo_Label'] = promo_stats['Promo'].map({0: 'No Promo', 1: 'Promo Active'})
             
-#             promo_increase = (promo_stats[promo_stats['Promo']==1]['Sales'].values[0] - promo_stats[promo_stats['Promo']==0]['Sales'].values[0]) / promo_stats[promo_stats['Promo']==0]['Sales'].values[0] * 100
+            promo_increase = (promo_stats[promo_stats['Promo']==1]['Sales'].values[0] - promo_stats[promo_stats['Promo']==0]['Sales'].values[0]) / promo_stats[promo_stats['Promo']==0]['Sales'].values[0] * 100
             
-#             fig3 = px.bar(promo_stats, x='Promo_Label', y='Sales', title=f'Sales Increase: {promo_increase:.2f}%', color='Promo_Label', color_discrete_sequence=['#3498db', '#e74c3c'], text=promo_stats['Sales'].apply(lambda x: f"${x:,.0f}"))
-#             st.plotly_chart(fig3, use_container_width=True)
+            fig3 = px.bar(promo_stats, x='Promo_Label', y='Sales', title=f'Sales Increase: {promo_increase:.2f}%', color='Promo_Label', color_discrete_sequence=['#3498db', '#e74c3c'], text=promo_stats['Sales'].apply(lambda x: f"${x:,.0f}"))
+            st.plotly_chart(fig3, use_container_width=True)
 
-#         col_c, col_d = st.columns(2)
+        col_c, col_d = st.columns(2)
         
-#         # 4. Store Type Performance
-#         with col_c:
-#             st.subheader("🏪 4. Store Type Performance")
-#             store_stats = df.groupby('StoreType')['Sales'].mean().reset_index()
-#             fig4 = px.bar(store_stats, x='StoreType', y='Sales', title='Average Sales by Store Type', color='Sales', color_continuous_scale='magma')
-#             fig4.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
-#             st.plotly_chart(fig4, use_container_width=True)
+        # 4. Store Type Performance
+        with col_c:
+            st.subheader("🏪 4. Store Type Performance")
+            store_stats = df.groupby('StoreType')['Sales'].mean().reset_index()
+            fig4 = px.bar(store_stats, x='StoreType', y='Sales', title='Average Sales by Store Type', color='Sales', color_continuous_scale='magma')
+            fig4.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
+            st.plotly_chart(fig4, use_container_width=True)
             
-#         # 5. Assortment Type Insights
-#         with col_d:
-#             st.subheader("📦 5. Assortment Type Impact")
-#             assort_stats = df.groupby('Assortment')['Sales'].mean().reset_index()
-#             fig5 = px.bar(assort_stats, x='Assortment', y='Sales', title='Average Sales by Assortment Type', color='Sales', color_continuous_scale='plasma')
-#             fig5.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
-#             st.plotly_chart(fig5, use_container_width=True)
+        # 5. Assortment Type Insights
+        with col_d:
+            st.subheader("📦 5. Assortment Type Impact")
+            assort_stats = df.groupby('Assortment')['Sales'].mean().reset_index()
+            fig5 = px.bar(assort_stats, x='Assortment', y='Sales', title='Average Sales by Assortment Type', color='Sales', color_continuous_scale='plasma')
+            fig5.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
+            st.plotly_chart(fig5, use_container_width=True)
             
-#         # 6. Holiday Impacts
-#         st.subheader("🏫 6. State vs School Holiday Impacts")
-#         col_e, col_f = st.columns(2)
-#         with col_e:
-#             hol_stats = df.groupby('StateHoliday')['Sales'].mean().reset_index()
-#             # Map state holiday to string if it isn't already to handle 0 and '0'
-#             hol_stats['StateHoliday'] = hol_stats['StateHoliday'].astype(str)
-#             fig6 = px.bar(hol_stats, x='StateHoliday', y='Sales', title='Impact of State Holidays (a=Public, b=Easter, c=Christmas)', color='StateHoliday', color_discrete_sequence=px.colors.sequential.Reds_r)
-#             st.plotly_chart(fig6, use_container_width=True)
+        # 6. Holiday Impacts
+        st.subheader("🏫 6. State vs School Holiday Impacts")
+        col_e, col_f = st.columns(2)
+        with col_e:
+            hol_stats = df.groupby('StateHoliday')['Sales'].mean().reset_index()
+            # Map state holiday to string if it isn't already to handle 0 and '0'
+            hol_stats['StateHoliday'] = hol_stats['StateHoliday'].astype(str)
+            fig6 = px.bar(hol_stats, x='StateHoliday', y='Sales', title='Impact of State Holidays (a=Public, b=Easter, c=Christmas)', color='StateHoliday', color_discrete_sequence=px.colors.sequential.Reds_r)
+            st.plotly_chart(fig6, use_container_width=True)
         
-#         with col_f:
-#             sh_stats = df.groupby('SchoolHoliday')['Sales'].mean().reset_index()
-#             sh_stats['SchoolHoliday'] = sh_stats['SchoolHoliday'].map({0: 'No', 1: 'Yes'})
-#             fig7 = px.bar(sh_stats, x='SchoolHoliday', y='Sales', title='Impact of School Holidays', color='SchoolHoliday', color_discrete_sequence=['#2ecc71', '#27ae60'])
-#             st.plotly_chart(fig7, use_container_width=True)
+        with col_f:
+            sh_stats = df.groupby('SchoolHoliday')['Sales'].mean().reset_index()
+            sh_stats['SchoolHoliday'] = sh_stats['SchoolHoliday'].map({0: 'No', 1: 'Yes'})
+            fig7 = px.bar(sh_stats, x='SchoolHoliday', y='Sales', title='Impact of School Holidays', color='SchoolHoliday', color_discrete_sequence=['#2ecc71', '#27ae60'])
+            st.plotly_chart(fig7, use_container_width=True)
 
-#         col_g, col_h = st.columns(2)
+        col_g, col_h = st.columns(2)
         
-#         # 7. Combined Effect of School Holiday and Promo
-#         with col_g:
-#             st.subheader("🎓 × 🏷️ 7. Combined Effect of Holiday & Promo")
-#             combo_stats = df.groupby(['SchoolHoliday', 'Promo'])['Sales'].mean().reset_index()
-#             # Format labels
-#             combo_stats['Condition'] = combo_stats.apply(lambda row: f"Promo: {'Yes' if row['Promo']==1 else 'No'} | School Holiday: {'Yes' if row['SchoolHoliday']==1 else 'No'}", axis=1)
+        # 7. Combined Effect of School Holiday and Promo
+        with col_g:
+            st.subheader("🎓 × 🏷️ 7. Combined Effect of Holiday & Promo")
+            combo_stats = df.groupby(['SchoolHoliday', 'Promo'])['Sales'].mean().reset_index()
+            # Format labels
+            combo_stats['Condition'] = combo_stats.apply(lambda row: f"Promo: {'Yes' if row['Promo']==1 else 'No'} | School Holiday: {'Yes' if row['SchoolHoliday']==1 else 'No'}", axis=1)
             
-#             fig8 = px.bar(combo_stats, x='Condition', y='Sales', color='Promo',
-#                                title='Average Sales by Promo and School Holiday Combination',
-#                                text=combo_stats['Sales'].apply(lambda x: f"${x:,.0f}"),
-#                                color_continuous_scale='Reds')
-#             st.plotly_chart(fig8, use_container_width=True)
+            fig8 = px.bar(combo_stats, x='Condition', y='Sales', color='Promo',
+                               title='Average Sales by Promo and School Holiday Combination',
+                               text=combo_stats['Sales'].apply(lambda x: f"${x:,.0f}"),
+                               color_continuous_scale='Reds')
+            st.plotly_chart(fig8, use_container_width=True)
 
-#         # 8. Month-wise Pattern of School Holidays and Orders
-#         with col_h:
-#             st.subheader("📆 8. School Holiday Pattern by Month")
-#             monthly_sh = df[df['SchoolHoliday'] == 1].groupby(['Month', 'Month_Name'])['Sales'].agg(total_holidays='count', avg_sales='mean').reset_index()
-#             monthly_sh = monthly_sh.sort_values('Month')
+        # 8. Month-wise Pattern of School Holidays and Orders
+        with col_h:
+            st.subheader("📆 8. School Holiday Pattern by Month")
+            monthly_sh = df[df['SchoolHoliday'] == 1].groupby(['Month', 'Month_Name'])['Sales'].agg(total_holidays='count', avg_sales='mean').reset_index()
+            monthly_sh = monthly_sh.sort_values('Month')
             
-#             fig9 = make_subplots(specs=[[{"secondary_y": True}]])
-#             fig9.add_trace(go.Bar(x=monthly_sh['Month_Name'], y=monthly_sh['total_holidays'], name='Holiday Days', marker_color='lightblue'), secondary_y=False)
-#             fig9.add_trace(go.Scatter(x=monthly_sh['Month_Name'], y=monthly_sh['avg_sales'], name='Avg Sales (During Holiday)', mode='lines+markers', line=dict(color='red')), secondary_y=True)
-#             fig9.update_layout(title_text='Month-wise School Holidays and their Effect on Sales')
-#             fig9.update_yaxes(title_text="Total Holiday Days", secondary_y=False)
-#             fig9.update_yaxes(title_text="Average Sales", secondary_y=True)
-#             st.plotly_chart(fig9, use_container_width=True)
+            fig9 = make_subplots(specs=[[{"secondary_y": True}]])
+            fig9.add_trace(go.Bar(x=monthly_sh['Month_Name'], y=monthly_sh['total_holidays'], name='Holiday Days', marker_color='lightblue'), secondary_y=False)
+            fig9.add_trace(go.Scatter(x=monthly_sh['Month_Name'], y=monthly_sh['avg_sales'], name='Avg Sales (During Holiday)', mode='lines+markers', line=dict(color='red')), secondary_y=True)
+            fig9.update_layout(title_text='Month-wise School Holidays and their Effect on Sales')
+            fig9.update_yaxes(title_text="Total Holiday Days", secondary_y=False)
+            fig9.update_yaxes(title_text="Average Sales", secondary_y=True)
+            st.plotly_chart(fig9, use_container_width=True)
 
-#         st.markdown("---")
+        st.markdown("---")
         
-#         # 9. Month-wise Pattern of Promotions
-#         st.subheader("📆 9. Month-wise Promotion Pattern and Effectiveness")
-#         st.markdown("Are promotions run evenly throughout the year? And how effective are they during those months?")
-#         monthly_promo = df[df['Promo'] == 1].groupby(['Month', 'Month_Name'])['Sales'].agg(total_promos='count', avg_sales='mean').reset_index()
-#         monthly_promo = monthly_promo.sort_values('Month')
+        # 9. Month-wise Pattern of Promotions
+        st.subheader("📆 9. Month-wise Promotion Pattern and Effectiveness")
+        st.markdown("Are promotions run evenly throughout the year? And how effective are they during those months?")
+        monthly_promo = df[df['Promo'] == 1].groupby(['Month', 'Month_Name'])['Sales'].agg(total_promos='count', avg_sales='mean').reset_index()
+        monthly_promo = monthly_promo.sort_values('Month')
         
-#         fig10 = make_subplots(specs=[[{"secondary_y": True}]])
-#         fig10.add_trace(go.Bar(x=monthly_promo['Month_Name'], y=monthly_promo['total_promos'], name='Promo Days', marker_color='orange'), secondary_y=False)
-#         fig10.add_trace(go.Scatter(x=monthly_promo['Month_Name'], y=monthly_promo['avg_sales'], name='Avg Sales (During Promo)', mode='lines+markers', line=dict(color='darkgreen')), secondary_y=True)
-#         fig10.update_layout(title_text='Month-wise Promotion Pattern and its Effect on Sales')
-#         fig10.update_yaxes(title_text="Total Number of Promo Days", secondary_y=False)
-#         fig10.update_yaxes(title_text="Average Sales during Promos", secondary_y=True)
-#         st.plotly_chart(fig10, use_container_width=True)
+        fig10 = make_subplots(specs=[[{"secondary_y": True}]])
+        fig10.add_trace(go.Bar(x=monthly_promo['Month_Name'], y=monthly_promo['total_promos'], name='Promo Days', marker_color='orange'), secondary_y=False)
+        fig10.add_trace(go.Scatter(x=monthly_promo['Month_Name'], y=monthly_promo['avg_sales'], name='Avg Sales (During Promo)', mode='lines+markers', line=dict(color='darkgreen')), secondary_y=True)
+        fig10.update_layout(title_text='Month-wise Promotion Pattern and its Effect on Sales')
+        fig10.update_yaxes(title_text="Total Number of Promo Days", secondary_y=False)
+        fig10.update_yaxes(title_text="Average Sales during Promos", secondary_y=True)
+        st.plotly_chart(fig10, use_container_width=True)
 
-#     else:
-#         st.info("Insights cannot be generated because the raw dataset failed to load.")
 
-# # ==========================================================
-# # PAGE 3: FILTERED INSIGHTS
-# # ==========================================================
-# elif page == "🔍 Filtered Insights":
-#     st.title("🔍 Filtered Insights")
-#     st.markdown("Slice and dice the data using multiple parameters to find customized insights.")
+        st.markdown("---")
+        
+        # 10. Feature Correlation Heatmap
+        st.subheader("🔥 10. Feature Correlation Heatmap")
+        st.markdown("How do different numerical features correlate with Sales and with each other?")
+        
+        # Select numeric columns
+        numeric_df = df.select_dtypes(include=[np.number])
+        cols_to_drop = ['Store', 'DayOfWeek', 'Year', 'Month', 'Promo2SinceYear', 'Promo2SinceWeek']
+        numeric_df = numeric_df.drop(columns=[col for col in cols_to_drop if col in numeric_df.columns], errors='ignore')
+        
+        # Calc correlation
+        corr_matrix = numeric_df.corr().round(2)
+        
+        fig11 = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='coolwarm',
+                          title="Correlation Matrix of Numerical Features")
+        st.plotly_chart(fig11, use_container_width=True)
+
+    else:
+        st.info("Insights cannot be generated because the raw dataset failed to load.")
+
+# ==========================================================
+# PAGE 3: FILTERED INSIGHTS
+# ==========================================================
+elif page == "🔍 Filtered Insights":
+    st.title("🔍 Filtered Insights")
+    st.markdown("Slice and dice the data using multiple parameters to find customized insights.")
     
-#     if raw_data_loaded:
-#         st.sidebar.markdown("---")
-#         st.sidebar.subheader("Filters")
+    if raw_data_loaded:
+        st.sidebar.markdown("---")
+        st.sidebar.subheader("Filters")
         
-#         # Get unique values for filters
-#         store_types = sorted(df['StoreType'].dropna().unique().tolist())
-#         assortments = sorted(df['Assortment'].dropna().unique().tolist())
-#         months = sorted(df['Month'].dropna().unique().tolist())
-#         days_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        # Get unique values for filters
+        store_types = sorted(df['StoreType'].dropna().unique().tolist())
+        assortments = sorted(df['Assortment'].dropna().unique().tolist())
+        months = sorted(df['Month'].dropna().unique().tolist())
+        days_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         
-#         selected_store_type = st.sidebar.multiselect("Select Store Type", options=store_types, default=store_types)
-#         selected_assortment = st.sidebar.multiselect("Select Assortment", options=assortments, default=assortments)
-#         selected_school_hol = st.sidebar.radio("School Holiday", options=["All", "Yes", "No"])
-#         selected_months = st.sidebar.multiselect("Select Months", options=months, default=months, format_func=lambda x: pd.to_datetime(str(x), format='%m').month_name())
-#         selected_days = st.sidebar.multiselect("Select Days of Week", options=days_order, default=days_order)
-#         exclude_zero_sales = st.sidebar.checkbox("Exclude Zero Sales (Closed Days)", value=True)
+        selected_store_type = st.sidebar.multiselect("Select Store Type", options=store_types, default=store_types)
+        selected_assortment = st.sidebar.multiselect("Select Assortment", options=assortments, default=assortments)
+        selected_school_hol = st.sidebar.radio("School Holiday", options=["All", "Yes", "No"])
+        selected_months = st.sidebar.multiselect("Select Months", options=months, default=months, format_func=lambda x: pd.to_datetime(str(x), format='%m').month_name())
+        selected_days = st.sidebar.multiselect("Select Days of Week", options=days_order, default=days_order)
+        exclude_zero_sales = st.sidebar.checkbox("Exclude Zero Sales (Closed Days)", value=True)
         
-#         # Apply filters
-#         filtered_df = df.copy()
-#         if selected_store_type:
-#             filtered_df = filtered_df[filtered_df['StoreType'].isin(selected_store_type)]
-#         if selected_assortment:
-#             filtered_df = filtered_df[filtered_df['Assortment'].isin(selected_assortment)]
-#         if selected_months:
-#             filtered_df = filtered_df[filtered_df['Month'].isin(selected_months)]
-#         if selected_days:
-#             filtered_df = filtered_df[filtered_df['DayName'].isin(selected_days)]
+        # Apply filters
+        filtered_df = df.copy()
+        if selected_store_type:
+            filtered_df = filtered_df[filtered_df['StoreType'].isin(selected_store_type)]
+        if selected_assortment:
+            filtered_df = filtered_df[filtered_df['Assortment'].isin(selected_assortment)]
+        if selected_months:
+            filtered_df = filtered_df[filtered_df['Month'].isin(selected_months)]
+        if selected_days:
+            filtered_df = filtered_df[filtered_df['DayName'].isin(selected_days)]
             
-#         if selected_school_hol == "Yes":
-#             filtered_df = filtered_df[filtered_df['SchoolHoliday'] == 1]
-#         elif selected_school_hol == "No":
-#             filtered_df = filtered_df[filtered_df['SchoolHoliday'] == 0]
+        if selected_school_hol == "Yes":
+            filtered_df = filtered_df[filtered_df['SchoolHoliday'] == 1]
+        elif selected_school_hol == "No":
+            filtered_df = filtered_df[filtered_df['SchoolHoliday'] == 0]
             
-#         if exclude_zero_sales:
-#             filtered_df = filtered_df[filtered_df['Sales'] > 0]
+        if exclude_zero_sales:
+            filtered_df = filtered_df[filtered_df['Sales'] > 0]
             
-#         if len(filtered_df) == 0:
-#             st.warning("No data available for the selected filters.")
-#         else:
-#             col1, col2, col3 = st.columns(3)
-#             with col1:
-#                 st.metric("Total Stores in Filter", filtered_df['Store'].nunique())
-#             with col2:
-#                 st.metric("Average Sales", f"${filtered_df['Sales'].mean():,.2f}")
-#             with col3:
-#                 st.metric("Total Records", f"{len(filtered_df):,}")
+        if len(filtered_df) == 0:
+            st.warning("No data available for the selected filters.")
+        else:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Stores in Filter", filtered_df['Store'].nunique())
+            with col2:
+                st.metric("Average Sales", f"${filtered_df['Sales'].mean():,.2f}")
+            with col3:
+                st.metric("Total Records", f"{len(filtered_df):,}")
             
-#             # Visualization 1: Sales Distribution
-#             st.subheader("📉 Sales Distribution for Filtered Data")
-#             fig_dist = px.histogram(filtered_df, x='Sales', nbins=50, 
-#                                     title='Distribution of Sales',
-#                                     color_discrete_sequence=['#3498db'])
-#             st.plotly_chart(fig_dist, use_container_width=True)
+            # Visualization 1: Sales Distribution
+            st.subheader("📉 Sales Distribution for Filtered Data")
+            fig_dist = px.histogram(filtered_df, x='Sales', nbins=50, 
+                                    title='Distribution of Sales',
+                                    color_discrete_sequence=['#3498db'])
+            st.plotly_chart(fig_dist, use_container_width=True)
             
-#             # Visualization 2: Promo Performance within Filter
-#             st.subheader("🏷️ Promotion Effectiveness in Filtered Segment")
-#             promo_filtered = filtered_df.groupby('Promo')['Sales'].mean().reset_index()
-#             promo_filtered['Promo_Label'] = promo_filtered['Promo'].map({0: 'No Promo', 1: 'Promo Active'})
+            # Visualization 2: Promo Performance within Filter
+            st.subheader("🏷️ Promotion Effectiveness in Filtered Segment")
+            promo_filtered = filtered_df.groupby('Promo')['Sales'].mean().reset_index()
+            promo_filtered['Promo_Label'] = promo_filtered['Promo'].map({0: 'No Promo', 1: 'Promo Active'})
             
-#             fig_promo2 = px.bar(promo_filtered, x='Promo_Label', y='Sales', color='Promo_Label',
-#                                 title='Average Sales (Promo vs No Promo)',
-#                                 text=promo_filtered['Sales'].apply(lambda x: f"${x:,.0f}"))
-#             st.plotly_chart(fig_promo2, use_container_width=True)
+            fig_promo2 = px.bar(promo_filtered, x='Promo_Label', y='Sales', color='Promo_Label',
+                                title='Average Sales (Promo vs No Promo)',
+                                text=promo_filtered['Sales'].apply(lambda x: f"${x:,.0f}"))
+            st.plotly_chart(fig_promo2, use_container_width=True)
             
-#     else:
-#         st.info("Insights cannot be generated because the raw dataset failed to load.")
+    else:
+        st.info("Insights cannot be generated because the raw dataset failed to load.")
