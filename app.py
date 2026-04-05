@@ -167,7 +167,7 @@ elif page == "📊 Overall Insights":
         fig1.update_layout(title_text='Average Sales and Month-over-Month Percent Change')
         fig1.update_yaxes(title_text="Average Sales", secondary_y=False)
         fig1.update_yaxes(title_text="% Change", secondary_y=True)
-        st.plotly_chart(fig1, use_container_width=True)
+        st.plotly_chart(fig1, width='stretch')
         
         col_a, col_b = st.columns(2)
         
@@ -179,7 +179,7 @@ elif page == "📊 Overall Insights":
             
             fig2 = px.bar(day_stats, x='DayName', y='Sales', title='Average Sales by Day of Week', color='Sales', color_continuous_scale='viridis')
             fig2.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red', annotation_text='Overall Avg')
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width='stretch')
             
         # 3. Promotional Insights
         with col_b:
@@ -190,7 +190,7 @@ elif page == "📊 Overall Insights":
             promo_increase = (promo_stats[promo_stats['Promo']==1]['Sales'].values[0] - promo_stats[promo_stats['Promo']==0]['Sales'].values[0]) / promo_stats[promo_stats['Promo']==0]['Sales'].values[0] * 100
             
             fig3 = px.bar(promo_stats, x='Promo_Label', y='Sales', title=f'Sales Increase: {promo_increase:.2f}%', color='Promo_Label', color_discrete_sequence=['#3498db', '#e74c3c'], text=promo_stats['Sales'].apply(lambda x: f"${x:,.0f}"))
-            st.plotly_chart(fig3, use_container_width=True)
+            st.plotly_chart(fig3, width='stretch')
 
         col_c, col_d = st.columns(2)
         
@@ -200,7 +200,7 @@ elif page == "📊 Overall Insights":
             store_stats = df.groupby('StoreType')['Sales'].mean().reset_index()
             fig4 = px.bar(store_stats, x='StoreType', y='Sales', title='Average Sales by Store Type', color='Sales', color_continuous_scale='magma')
             fig4.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
-            st.plotly_chart(fig4, use_container_width=True)
+            st.plotly_chart(fig4, width='stretch')
             
         # 5. Assortment Type Insights
         with col_d:
@@ -208,7 +208,7 @@ elif page == "📊 Overall Insights":
             assort_stats = df.groupby('Assortment')['Sales'].mean().reset_index()
             fig5 = px.bar(assort_stats, x='Assortment', y='Sales', title='Average Sales by Assortment Type', color='Sales', color_continuous_scale='plasma')
             fig5.add_hline(y=overall_mean_sales, line_dash='dash', line_color='red')
-            st.plotly_chart(fig5, use_container_width=True)
+            st.plotly_chart(fig5, width='stretch')
             
         # 6. Holiday Impacts
         st.subheader("🏫 6. State vs School Holiday Impacts")
@@ -218,13 +218,13 @@ elif page == "📊 Overall Insights":
             # Map state holiday to string if it isn't already to handle 0 and '0'
             hol_stats['StateHoliday'] = hol_stats['StateHoliday'].astype(str)
             fig6 = px.bar(hol_stats, x='StateHoliday', y='Sales', title='Impact of State Holidays (a=Public, b=Easter, c=Christmas)', color='StateHoliday', color_discrete_sequence=px.colors.sequential.Reds_r)
-            st.plotly_chart(fig6, use_container_width=True)
+            st.plotly_chart(fig6, width='stretch')
         
         with col_f:
             sh_stats = df.groupby('SchoolHoliday')['Sales'].mean().reset_index()
             sh_stats['SchoolHoliday'] = sh_stats['SchoolHoliday'].map({0: 'No', 1: 'Yes'})
             fig7 = px.bar(sh_stats, x='SchoolHoliday', y='Sales', title='Impact of School Holidays', color='SchoolHoliday', color_discrete_sequence=['#2ecc71', '#27ae60'])
-            st.plotly_chart(fig7, use_container_width=True)
+            st.plotly_chart(fig7, width='stretch')
 
         col_g, col_h = st.columns(2)
         
@@ -239,7 +239,7 @@ elif page == "📊 Overall Insights":
                                title='Average Sales by Promo and School Holiday Combination',
                                text=combo_stats['Sales'].apply(lambda x: f"${x:,.0f}"),
                                color_continuous_scale='Reds')
-            st.plotly_chart(fig8, use_container_width=True)
+            st.plotly_chart(fig8, width='stretch')
 
         # 8. Month-wise Pattern of School Holidays and Orders
         with col_h:
@@ -253,7 +253,7 @@ elif page == "📊 Overall Insights":
             fig9.update_layout(title_text='Month-wise School Holidays and their Effect on Sales')
             fig9.update_yaxes(title_text="Total Holiday Days", secondary_y=False)
             fig9.update_yaxes(title_text="Average Sales", secondary_y=True)
-            st.plotly_chart(fig9, use_container_width=True)
+            st.plotly_chart(fig9, width='stretch')
 
         st.markdown("---")
         
@@ -269,7 +269,7 @@ elif page == "📊 Overall Insights":
         fig10.update_layout(title_text='Month-wise Promotion Pattern and its Effect on Sales')
         fig10.update_yaxes(title_text="Total Number of Promo Days", secondary_y=False)
         fig10.update_yaxes(title_text="Average Sales during Promos", secondary_y=True)
-        st.plotly_chart(fig10, use_container_width=True)
+        st.plotly_chart(fig10, width='stretch')
 
 
         st.markdown("---")
@@ -288,7 +288,7 @@ elif page == "📊 Overall Insights":
         
         fig11 = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='RdBu_r',
                           title="Correlation Matrix of Numerical Features")
-        st.plotly_chart(fig11, use_container_width=True)
+        st.plotly_chart(fig11, width='stretch')
 
     else:
         st.info("Insights cannot be generated because the raw dataset failed to load.")
@@ -352,7 +352,7 @@ elif page == "🔍 Filtered Insights":
             fig_dist = px.histogram(filtered_df, x='Sales', nbins=50, 
                                     title='Distribution of Sales',
                                     color_discrete_sequence=['#3498db'])
-            st.plotly_chart(fig_dist, use_container_width=True)
+            st.plotly_chart(fig_dist, width='stretch')
             
             # Visualization 2: Promo Performance within Filter
             st.subheader("🏷️ Promotion Effectiveness in Filtered Segment")
@@ -362,7 +362,7 @@ elif page == "🔍 Filtered Insights":
             fig_promo2 = px.bar(promo_filtered, x='Promo_Label', y='Sales', color='Promo_Label',
                                 title='Average Sales (Promo vs No Promo)',
                                 text=promo_filtered['Sales'].apply(lambda x: f"${x:,.0f}"))
-            st.plotly_chart(fig_promo2, use_container_width=True)
+            st.plotly_chart(fig_promo2, width='stretch')
             
     else:
         st.info("Insights cannot be generated because the raw dataset failed to load.")
@@ -414,7 +414,7 @@ elif page == "📦 Inventory Management":
     
     edited_df = st.data_editor(
         inv_df,
-        use_container_width=True,
+        width='stretch',
         num_rows="fixed",
         column_config={
             "Item_ID": st.column_config.NumberColumn("Item ID", disabled=True),
@@ -446,7 +446,7 @@ elif page == "📦 Inventory Management":
         if len(action_df) > 0:
             action_df['Deficit'] = action_df['Reorder_Level'] - action_df['Stock']
             st.warning(f"You have {len(action_df)} item(s) currently under or at the recommended reorder level.")
-            st.dataframe(action_df[['Item_ID', 'Item_Name', 'Stock', 'Reorder_Level']], use_container_width=True, hide_index=True)
+            st.dataframe(action_df[['Item_ID', 'Item_Name', 'Stock', 'Reorder_Level']], width='stretch', hide_index=True)
         else:
             st.success("All items are currently well-stocked. No immediate action required.")
 
