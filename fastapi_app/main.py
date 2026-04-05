@@ -35,9 +35,15 @@ def startup_event():
         print(f"Model load error: {e}")
 
     try:
-        train_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'train.csv'), parse_dates=['Date'])
+        dtypes = {
+            'Store': 'uint16', 'DayOfWeek': 'uint8', 'Sales': 'float32', 
+            'Customers': 'float32', 'Open': 'uint8', 'Promo': 'uint8', 
+            'StateHoliday': 'str', 'SchoolHoliday': 'uint8'
+        }
+        train_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'train.csv'), parse_dates=['Date'], dtype=dtypes)
         store_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'store.csv'))
         df_merged = pd.merge(train_df, store_df, on='Store', how='left')
+        del train_df
         df_merged['Year'] = df_merged['Date'].dt.year
         df_merged['Month'] = df_merged['Date'].dt.month
         df_merged['Month_Name'] = df_merged['Date'].dt.month_name()

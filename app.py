@@ -31,11 +31,17 @@ def load_model():
 @st.cache_data
 def load_and_prep_data():
     # Load raw data for insights
-    train_df = pd.read_csv('datasets/train.csv', parse_dates=['Date'])
+    dtypes = {
+        'Store': 'uint16', 'DayOfWeek': 'uint8', 'Sales': 'float32', 
+        'Customers': 'float32', 'Open': 'uint8', 'Promo': 'uint8', 
+        'StateHoliday': 'str', 'SchoolHoliday': 'uint8'
+    }
+    train_df = pd.read_csv('datasets/train.csv', parse_dates=['Date'], dtype=dtypes)
     store_df = pd.read_csv('datasets/store.csv')
     
     # Merge datasets
     df = pd.merge(train_df, store_df, on='Store', how='left')
+    del train_df
     
     # Feature Engineering for Insights
     df['Year'] = df['Date'].dt.year
