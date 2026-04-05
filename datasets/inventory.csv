@@ -1,0 +1,9 @@
+Item_ID,Item_Name,Category,Stock,Reorder_Level,Unit_Price
+1001,Premium Shampoo,Health & Beauty,150,50,5.99
+1002,Organic Soap,Health & Beauty,40,60,3.49
+1003,Pain Reliever,Medicine,200,100,8.99
+1004,Vitamins C 1000mg,Medicine,30,50,12.99
+1005,Toothpaste,Personal Care,120,40,2.99
+1006,Diapers (Pack),Baby Care,15,30,24.99
+1007,Hand Sanitizer,Health & Beauty,80,50,4.49
+1008,Facial Tissues,Household,300,150,1.99

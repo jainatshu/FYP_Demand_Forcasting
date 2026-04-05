@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import math
+import os
 
 # ---- PAGE CONFIGURATION ----
 st.set_page_config(page_title="Rossmann Sales Prediction", page_icon="📈", layout="wide")
@@ -66,7 +67,7 @@ except Exception as e:
 
 # ---- SIDEBAR NAVIGATION ----
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to:", ["🔮 Sales Prediction", "📊 Overall Insights", "🔍 Filtered Insights"])
+page = st.sidebar.radio("Go to:", ["🔮 Sales Prediction", "📊 Overall Insights", "🔍 Filtered Insights", "📦 Inventory Management"])
 
 # ==========================================================
 # PAGE 1: PREDICTION
@@ -285,7 +286,7 @@ elif page == "📊 Overall Insights":
         # Calc correlation
         corr_matrix = numeric_df.corr().round(2)
         
-        fig11 = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='coolwarm',
+        fig11 = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='RdBu_r',
                           title="Correlation Matrix of Numerical Features")
         st.plotly_chart(fig11, use_container_width=True)
 
@@ -365,3 +366,121 @@ elif page == "🔍 Filtered Insights":
             
     else:
         st.info("Insights cannot be generated because the raw dataset failed to load.")
+
+# ==========================================================
+# PAGE 4: INVENTORY MANAGEMENT
+# ==========================================================
+elif page == "📦 Inventory Management":
+    st.title("📦 Inventory Management System")
+    st.markdown("Track and manage store inventory levels. Keep an eye out for low stock!")
+    
+    INVENTORY_FILE = 'datasets/inventory.csv'
+    
+    # Initialize inventory file if missing
+    if not os.path.exists(INVENTORY_FILE):
+        default_data = {
+            "Item_ID": [1001, 1002, 1003],
+            "Item_Name": ["Premium Shampoo", "Organic Soap", "Pain Reliever"],
+            "Category": ["Health & Beauty", "Health & Beauty", "Medicine"],
+            "Stock": [150, 40, 200],
+            "Reorder_Level": [50, 60, 100],
+            "Unit_Price": [5.99, 3.49, 8.99]
+        }
+        pd.DataFrame(default_data).to_csv(INVENTORY_FILE, index=False)
+        
+    def load_inventory():
+        return pd.read_csv(INVENTORY_FILE)
+        
+    inv_df = load_inventory()
+    
+    # Overview Metrics
+    total_items = len(inv_df)
+    low_stock_items = len(inv_df[inv_df['Stock'] <= inv_df['Reorder_Level']])
+    if total_items > 0:
+        total_value = (inv_df['Stock'] * inv_df['Unit_Price']).sum()
+    else:
+        total_value = 0.0
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Total Unique Items</div><div class="metric-value" style="color:#3498db;">{total_items}</div></div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Low Stock Alerts</div><div class="metric-value" style="color:#e74c3c;">{low_stock_items}</div></div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Total Inventory Value</div><div class="metric-value" style="color:#2ecc71;">${total_value:,.2f}</div></div>', unsafe_allow_html=True)
+        
+    st.markdown("### 📋 Current Inventory List")
+    st.markdown("Edit directly in the table below to update stock levels, prices, or names.")
+    
+    edited_df = st.data_editor(
+        inv_df,
+        use_container_width=True,
+        num_rows="fixed",
+        column_config={
+            "Item_ID": st.column_config.NumberColumn("Item ID", disabled=True),
+            "Stock": st.column_config.NumberColumn("Current Stock", min_value=0),
+            "Reorder_Level": st.column_config.NumberColumn("Reorder Level", min_value=0),
+            "Unit_Price": st.column_config.NumberColumn("Price ($)", min_value=0.0, format="$%.2f")
+        }
+    )
+    
+    if st.button("💾 Save Inventory Changes"):
+        try:
+            edited_df.to_csv(INVENTORY_FILE, index=False)
+            st.success("Inventory updated successfully!")
+            if hasattr(st, "rerun"):
+                st.rerun()
+            else:
+                st.experimental_rerun()
+        except Exception as e:
+            st.error(f"Failed to save changes: {e}")
+            
+    st.markdown("---")
+    
+    col_left, col_right = st.columns([1, 1])
+    
+    with col_left:
+        # Determine what items need reordering
+        st.markdown("### ⚠️ Low Stock Action Items")
+        action_df = edited_df[edited_df['Stock'] <= edited_df['Reorder_Level']].copy()
+        if len(action_df) > 0:
+            action_df['Deficit'] = action_df['Reorder_Level'] - action_df['Stock']
+            st.warning(f"You have {len(action_df)} item(s) currently under or at the recommended reorder level.")
+            st.dataframe(action_df[['Item_ID', 'Item_Name', 'Stock', 'Reorder_Level']], use_container_width=True, hide_index=True)
+        else:
+            st.success("All items are currently well-stocked. No immediate action required.")
+
+    with col_right:
+        st.markdown("### ➕ Add New Item")
+        with st.form("add_item_form"):
+            col_a, col_b = st.columns(2)
+            with col_a:
+                new_name = st.text_input("Item Name")
+                new_cat = st.selectbox("Category", ["Health & Beauty", "Medicine", "Personal Care", "Household", "Baby Care", "Other"])
+                new_price = st.number_input("Unit Price ($)", min_value=0.0, step=0.5, value=1.99)
+            with col_b:
+                new_stock = st.number_input("Initial Stock", min_value=0, value=0)
+                new_reorder = st.number_input("Reorder Level", min_value=0, value=10)
+                
+            submitted = st.form_submit_button("Add Item")
+            
+            if submitted:
+                if new_name.strip() == "":
+                    st.error("Item name cannot be empty.")
+                else:
+                    new_id = int(inv_df['Item_ID'].max() + 1) if not inv_df.empty else 1000
+                    new_row = pd.DataFrame({
+                        "Item_ID": [new_id],
+                        "Item_Name": [new_name],
+                        "Category": [new_cat],
+                        "Stock": [new_stock],
+                        "Reorder_Level": [new_reorder],
+                        "Unit_Price": [new_price]
+                    })
+                    updated_df = pd.concat([inv_df, new_row], ignore_index=True)
+                    updated_df.to_csv(INVENTORY_FILE, index=False)
+                    st.success(f"Added {new_name} with ID {new_id}!")
+                    if hasattr(st, "rerun"):
+                        st.rerun()
+                    else:
+                        st.experimental_rerun()
