@@ -31,14 +31,15 @@ def load_model():
 
 @st.cache_resource
 def load_and_prep_data():
-    # Load raw data for insights — sample 200K rows to stay within 512MB cloud limits
+    # Load raw data for insights — all rows, only needed columns (~170MB, fits in 512MB free tiers)
     dtypes = {
         'Store': 'uint16', 'DayOfWeek': 'uint8', 'Sales': 'float32', 
         'Customers': 'float32', 'Open': 'uint8', 'Promo': 'uint8', 
         'StateHoliday': 'str', 'SchoolHoliday': 'uint8'
     }
-    train_df = pd.read_csv('datasets/train.csv', parse_dates=['Date'], dtype=dtypes, nrows=200000)
-    store_df = pd.read_csv('datasets/store.csv')
+    insight_cols = ['Store', 'Date', 'Sales', 'Customers', 'Open', 'Promo', 'StateHoliday', 'SchoolHoliday', 'DayOfWeek']
+    train_df = pd.read_csv('datasets/train.csv', parse_dates=['Date'], dtype=dtypes, usecols=insight_cols)
+    store_df = pd.read_csv('datasets/store.csv', usecols=['Store', 'StoreType', 'Assortment', 'CompetitionDistance', 'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear', 'Promo2SinceWeek', 'Promo2SinceYear'])
     
     # Merge datasets
     df = pd.merge(train_df, store_df, on='Store', how='left')

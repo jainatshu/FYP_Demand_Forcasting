@@ -40,8 +40,9 @@ def startup_event():
             'Customers': 'float32', 'Open': 'uint8', 'Promo': 'uint8', 
             'StateHoliday': 'str', 'SchoolHoliday': 'uint8'
         }
-        train_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'train.csv'), parse_dates=['Date'], dtype=dtypes, nrows=200000)
-        store_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'store.csv'))
+        insight_cols = ['Store', 'Date', 'Sales', 'Customers', 'Open', 'Promo', 'StateHoliday', 'SchoolHoliday', 'DayOfWeek']
+        train_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'train.csv'), parse_dates=['Date'], dtype=dtypes, usecols=insight_cols)
+        store_df = pd.read_csv(os.path.join(PARENT_DIR, 'datasets', 'store.csv'), usecols=['Store', 'StoreType', 'Assortment', 'CompetitionDistance', 'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear', 'Promo2SinceWeek', 'Promo2SinceYear'])
         df_merged = pd.merge(train_df, store_df, on='Store', how='left')
         del train_df
         df_merged['Year'] = df_merged['Date'].dt.year
