@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import traceback
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -28,7 +29,7 @@ st.markdown("""
 def load_model():
     return joblib.load('rf_model_compressed.pkl.gz')
 
-@st.cache_data
+@st.cache_resource
 def load_and_prep_data():
     # Load raw data for insights
     dtypes = {
