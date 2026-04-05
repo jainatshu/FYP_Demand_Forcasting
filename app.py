@@ -414,7 +414,7 @@ elif page == "📦 Inventory Management":
     
     edited_df = st.data_editor(
         inv_df,
-        width='stretch',
+        use_container_width=True,
         num_rows="fixed",
         column_config={
             "Item_ID": st.column_config.NumberColumn("Item ID", disabled=True),
@@ -446,7 +446,7 @@ elif page == "📦 Inventory Management":
         if len(action_df) > 0:
             action_df['Deficit'] = action_df['Reorder_Level'] - action_df['Stock']
             st.warning(f"You have {len(action_df)} item(s) currently under or at the recommended reorder level.")
-            st.dataframe(action_df[['Item_ID', 'Item_Name', 'Stock', 'Reorder_Level']], width='stretch', hide_index=True)
+            st.dataframe(action_df[['Item_ID', 'Item_Name', 'Stock', 'Reorder_Level']], use_container_width=True, hide_index=True)
         else:
             st.success("All items are currently well-stocked. No immediate action required.")
 
