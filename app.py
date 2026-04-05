@@ -26,7 +26,7 @@ st.markdown("""
 # ---- DATA LOADING ----
 @st.cache_resource
 def load_model():
-    return joblib.load('rf_model.pkl')
+    return joblib.load('rf_model_compressed.pkl.gz')
 
 @st.cache_data
 def load_and_prep_data():
