@@ -63,7 +63,7 @@ try:
     data_loaded = True
 except Exception as e:
     data_loaded = False
-    st.error(f"Error loading model: {e}. Please ensure rf_model.pkl exists.")
+    st.error(f"Error loading model: {e}. Please ensure rf_model_compressed.pkl.gz exists in the repo root.")
 
 try:
     df = load_and_prep_data()
