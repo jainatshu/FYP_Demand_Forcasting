@@ -164,9 +164,10 @@ elif page == "📊 Overall Insights":
         st.subheader("� 1. Sales Trends Over Time")
         st.markdown("Examine how average sales and total sales percentage change fluctuate on a month-by-month basis.")
         
-        average_sales_time = df.groupby('DateStr')['Sales'].mean().reset_index()
-        pct_change_sales_time = df.groupby('DateStr')['Sales'].sum().pct_change() * 100
-        average_sales_time['Pct_Change'] = pct_change_sales_time.values
+        average_sales_time = df.groupby('DateStr')['Sales'].mean().reset_index().sort_values('DateStr')
+        pct_change_sales_time = df.groupby('DateStr')['Sales'].sum().sort_index().pct_change() * 100
+        average_sales_time = average_sales_time.reset_index(drop=True)
+        average_sales_time['Pct_Change'] = pct_change_sales_time.reset_index(drop=True)
         
         fig1 = make_subplots(specs=[[{"secondary_y": True}]])
         fig1.add_trace(go.Scatter(x=average_sales_time['DateStr'], y=average_sales_time['Sales'], name='Avg Sales', mode='lines+markers', line=dict(color='blue')), secondary_y=False)
